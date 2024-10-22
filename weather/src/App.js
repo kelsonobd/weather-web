@@ -2,11 +2,30 @@ import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import "./App.css";
 
+import api from "./services/api";
+
 function App() {
   const [input, setInput] = useState("");
-
-  const handleSearch = () =>{
-    alert("valor do input " + input)
+  const [city, setCity] = useState({});
+  const token = "c90ff10535e180a67ac8481f4a5bb1e8";
+  async function handleSearch() {
+    if (input === "") {
+      alert("Informe alguma cidade!");
+      return;
+    }
+    try {
+      const response = await api.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURI(
+          input
+        )}&appid=${token}&units=metric&lang=pt_br`
+      );
+      setCity(response.data);
+      console.log(response);
+      setInput("");
+    } catch {
+      alert("Ops! Erro ao buscar");
+      setInput("");
+    }
   }
 
   return (
@@ -16,7 +35,7 @@ function App() {
       <div className="containerInput">
         <input
           type="text"
-          placeholter="Digite a cidade"
+          placeholder="Digite a cidade"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
@@ -26,15 +45,17 @@ function App() {
         </button>
       </div>
 
-      <main className="main">
-        <h2>Brasília</h2>
-        <h3 className="mainCelsius">25</h3>
-        <p className="mainTemp">Nublado</p>
-        <div className="mainMaxMin">
-          <span>Máx:26</span>
-          <span>Mín:16</span>
-        </div>
-      </main>
+      {Object.keys(city).length > 0 && (
+        <main className="main">
+          <h2>{city.name}</h2>
+          <h3>{Math.round(city.main.temp)}°C</h3>
+          <p className="mainTemp">{city.weather[0].description}</p>
+          <div className="mainMaxMin">
+            <span>Mín: {Math.round(city.main?.temp_min)} °C</span>
+            <span>Máx: {Math.round(city.main?.temp_max)} °C</span>
+          </div>
+        </main>
+      )}
     </div>
   );
 }

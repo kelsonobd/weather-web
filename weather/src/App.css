@@ -45,7 +45,7 @@
 }
 
 .containerInput input::placeholder{
-    color:#f1f1f1
+    color:#7c7777
 }
 
 .buttonSearch{
@@ -80,7 +80,8 @@
     font-size: 35px;
 }
 .main .mainTemp{
-    font-size: 25px;
+    font-size: 20px;
+    text-transform: capitalize;
 
 }
 
